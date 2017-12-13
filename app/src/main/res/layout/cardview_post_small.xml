@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:cardview="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/postCardView"
+    android:layout_width="match_parent"
+    android:layout_height="148dp"
+    cardview:cardCornerRadius="@dimen/cornerradius_cardview"
+    android:layout_marginBottom="@dimen/activity_vertical_margin"
+    >
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentRight="true"
+        android:paddingLeft="4dp"
+        android:paddingRight="4dp"
+        >
+
+        <ImageView
+            android:id="@+id/postCardImage"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
+            android:transitionName="@string/transitionname_picture"
+            />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_gravity="bottom"
+            android:paddingLeft="@dimen/activity_vertical_margin"
+            android:paddingBottom="@dimen/activity_vertical_margin"
+            android:background="@color/backgroundtext_card"
+            >
+
+
+            <TextView
+                android:id="@+id/titleCard"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@android:color/white"
+                android:textSize="17dp" />
+
+        </LinearLayout>
+
+    </FrameLayout>
+
+
+    <!-- mentiras -->
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        >
+
+
+        <TextView
+            android:id="@+id/timeCard"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/firstword_textsize_card"
+            android:layout_marginLeft="@dimen/timecard_marginleft_card"
+            />
+
+        <TextView
+            android:id="@+id/likeNumberCard"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/firstword_textsize_card"
+            android:layout_marginLeft="@dimen/timecard_marginleft_card"
+            />
+
+
+        <TextView
+            android:id="@+id/dislikeNumberCard"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/firstword_textsize_card"
+            android:layout_marginLeft="@dimen/timecard_marginleft_card"
+            />
+
+
+        <TextView
+            android:id="@+id/userNameCard"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@android:color/white"
+            android:layout_marginTop="2dp"
+            android:textSize="@dimen/textsize_username_card"
+            />
+
+
+
+
+    </LinearLayout>
+
+</android.support.v7.widget.CardView>

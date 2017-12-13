@@ -9,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.Toast;
@@ -27,11 +28,14 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.opengto.buzondequejas.BuzonApplication;
 import com.opengto.buzondequejas.layout.ContainerActivity;
 import com.opengto.buzondequejas.R;
 import com.opengto.buzondequejas.model.User;
 
 import java.util.Arrays;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class SigninActivity extends AppCompatActivity {
 
@@ -45,6 +49,10 @@ public class SigninActivity extends AppCompatActivity {
     private Button btnLogin;
     private LoginButton loginButtonFacebook;
     private ProgressBar progressBar;
+
+
+    private BuzonApplication app;
+
 
     private boolean userLogged = false;
 
@@ -91,6 +99,9 @@ public class SigninActivity extends AppCompatActivity {
     // metodos
 
     public void setupActivity(){
+
+        app = (BuzonApplication) getApplicationContext();
+
         btnLogin = (Button) findViewById(R.id.btnLogin);
         loginButtonFacebook = (LoginButton) findViewById(R.id.btnLoginFacebook);
 
@@ -105,7 +116,6 @@ public class SigninActivity extends AppCompatActivity {
 
     public void setupFirebase(){
         firebaseAuth = FirebaseAuth.getInstance();
-
 
         authStateListener = new FirebaseAuth.AuthStateListener(){
             @Override
@@ -170,7 +180,7 @@ public class SigninActivity extends AppCompatActivity {
 
             // obtener datos y meterlos en un objeto
             User user = new User(
-                    edtUsername.getText().toString(),
+                    edtUsername.getText().toString(), //email
                     edtPassword.getText().toString()
             );
 
@@ -195,8 +205,13 @@ public class SigninActivity extends AppCompatActivity {
     public boolean validateData(User user) {
 
 
-        if (user.getUsername().trim().equals("")){
-            showToast("El Username es obligatorio");
+        if (user.getEmail().trim().equals("")){
+            showToast("El Email es obligatorio");
+            return false;
+        }
+
+        if (!validarEmail(user.getEmail().trim())){
+            showToast("El Email no es valido");
             return false;
         }
 
@@ -207,6 +222,30 @@ public class SigninActivity extends AppCompatActivity {
 
         return true;
     }
+
+    private boolean validarEmail(String email) {
+        //Pattern pattern = Patterns.EMAIL_ADDRESS; return pattern.matcher(email).matches();
+
+        // Patrón para validar el email
+        Pattern pattern = Pattern
+                .compile("^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"
+                        + "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$");
+
+        // El email a validar
+
+        Matcher mather = pattern.matcher(email);
+
+        if (mather.find() == true) {
+            //System.out.println("El email ingresado es válido.");
+            return true;
+        } else {
+            //System.out.println("El email ingresado es inválido.");
+            return false;
+        }
+
+    }
+
+
 
 
     public void onclickLogin(View view) {
@@ -232,7 +271,7 @@ public class SigninActivity extends AppCompatActivity {
 
     public void performSignin(final User user){
 
-        firebaseAuth.signInWithEmailAndPassword(user.getUsername(), user.getPassword())
+        firebaseAuth.signInWithEmailAndPassword(user.getEmail(), user.getPassword())
                 .addOnCompleteListener(SigninActivity.this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
@@ -240,24 +279,17 @@ public class SigninActivity extends AppCompatActivity {
 
                             FirebaseUser user = task.getResult().getUser();
 
-                            //shared preferences
-                            SharedPreferences preferences = getSharedPreferences("USER", Context.MODE_PRIVATE);
-                            SharedPreferences.Editor editor = preferences.edit();
-                            editor.putString("email", user.getEmail());
-                            editor.commit();
+                            setUserSharedPreferences(user);
 
                             userLogged = true;
 
-                            hideProgressBar();
-                            enableInputs();
-
-                            showToast("Bienvenido: " + user.getEmail());
+                            showToast("Bienvenido: " + user.getDisplayName());
 
                             signinSuccess();
 
                         }else {
                             userLogged = false;
-                            showToast("Ocurrió un Error");
+                            showToast("Ocurrió un Error, tu usuario existe??");
                             Log.w(TAG, "Error" + task.getException());
                             hideProgressBar();
                             enableInputs();
@@ -280,19 +312,11 @@ public class SigninActivity extends AppCompatActivity {
                 if (task.isSuccessful()){
                     FirebaseUser user = task.getResult().getUser();
 
-                    //shared preferences
-                    SharedPreferences preferences = getSharedPreferences("USER", Context.MODE_PRIVATE);
-                    SharedPreferences.Editor editor = preferences.edit();
-                    editor.putString("email", user.getEmail());
-                    editor.commit();
-
+                    setUserSharedPreferences(user);
 
                     userLogged = true;
 
-                    hideProgressBar();
-                    enableInputs();
-
-                    showToast("Bienvenido: " + user.getEmail());
+                    showToast("Bienvenido: " + user.getDisplayName());
 
                     signinSuccess();
 
@@ -300,13 +324,23 @@ public class SigninActivity extends AppCompatActivity {
                    // FirebaseCrash.logcat(Log.WARN, TAG, "Login Facebook NO Exitoso");
                    // Toast.makeText(LoginActivity.this, "Login Facebook NO Exitoso", Toast.LENGTH_SHORT).show();
                     userLogged = false;
-                    showToast("Ocurrió un Error");
+                    //showToast("Ocurrió un Error");
                     Log.w(TAG, "Error" + task.getException());
                     hideProgressBar();
                     enableInputs();
                 }
             }
         });
+    }
+
+
+    public void setUserSharedPreferences(FirebaseUser user){
+        //shared preferences
+        BuzonApplication.putPref("email", user.getEmail(), getApplicationContext());
+        BuzonApplication.putPref("displayName", user.getDisplayName(), getApplicationContext());
+        BuzonApplication.putPref("profilePhotoUrl", user.getPhotoUrl().toString(), getApplicationContext());
+        BuzonApplication.putPref("userId", user.getUid(), getApplicationContext());
+
     }
 
 

@@ -6,23 +6,48 @@ package com.opengto.buzondequejas.model;
 
 public class Post {
 
-    private String picture;
+    private String description; //*
+    private String postType;    //*
+    private String postStatus;  //*
+    private User user;          //* (en el card solo se muestra el displayname)
+    private String tags;        //*
+
+    // cardview
+    private String id;
+    private String createdAt;
+    private String pictureUrl;
     private String title;
-    private String username;
-    private String time;
-    private String type;
-    private String status;
     private int likes;
     private int dislikes;
 
 
-    public Post(String picture, String title, String username, String time, String type, String status, int likes, int dislikes) {
-        this.picture = picture;
+    public Post() {
+    }
+
+    // constructor ful
+    public Post(String id, String pictureUrl, String title, String description, String createdAt, String postType, String postStatus, User user, String tags, int likes, int dislikes) {
+        this.id = id;
+        this.pictureUrl = pictureUrl;
         this.title = title;
-        this.username = username;
-        this.time = time;
-        this.type = type;
-        this.status = status;
+        this.description = description;
+        this.createdAt = createdAt;
+        this.postType = postType;
+        this.postStatus = postStatus;
+        this.user = user;
+        this.tags = tags;
+        this.likes = likes;
+        this.dislikes = dislikes;
+    }
+
+
+    //constructor cardview
+
+    public Post(User user, String id, String createdAt, String pictureUrl, String title, int likes, int dislikes) {
+        this.user = user;
+        this.id = id;
+        this.createdAt = createdAt;
+        this.pictureUrl = pictureUrl;
+        this.title = title;
         this.likes = likes;
         this.dislikes = dislikes;
     }
@@ -30,28 +55,36 @@ public class Post {
 
     // metodos get
 
-    public String getPicture() {
-        return picture;
+    public String getId() {
+        return id;
+    }
+
+    public String getPictureUrl() {
+        return pictureUrl;
     }
 
     public String getTitle() {
         return title;
     }
 
-    public String getUsername() {
-        return username;
+    public String getCreatedAt() {
+        return createdAt;
     }
 
-    public String getTime() {
-        return time;
+    public String getPostType() {
+        return postType;
     }
 
-    public String getType() {
-        return type;
+    public String getPostStatus() {
+        return postStatus;
     }
 
-    public String getStatus() {
-        return status;
+    public User getUser() {
+        return user;
+    }
+
+    public String getTags() {
+        return tags;
     }
 
     public int getLikes() {
@@ -62,32 +95,43 @@ public class Post {
         return dislikes;
     }
 
+    public String getDescription() {
+        return description;
+    }
 
     // metodos set
 
 
-    public void setPicture(String picture) {
-        this.picture = picture;
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public void setPictureUrl(String pictureUrl) {
+        this.pictureUrl = pictureUrl;
     }
 
     public void setTitle(String title) {
         this.title = title;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setCreatedAt(String createdAt) {
+        this.createdAt = createdAt;
     }
 
-    public void setTime(String time) {
-        this.time = time;
+    public void setPostType(String postType) {
+        this.postType = postType;
     }
 
-    public void setType(String type) {
-        this.type = type;
+    public void setPostStatus(String postStatus) {
+        this.postStatus = postStatus;
     }
 
-    public void setStatus(String status) {
-        this.status = status;
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public void setTags(String tags) {
+        this.tags = tags;
     }
 
     public void setLikes(int likes) {
@@ -96,5 +140,9 @@ public class Post {
 
     public void setDislikes(int dislikes) {
         this.dislikes = dislikes;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 }

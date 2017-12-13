@@ -23,7 +23,7 @@
 
     <!-- fixtures -->
     <string name="username_card">Joel Barrón</string>
-    <string name="firstword_card">Hace</string>
+    <string name="firstword_card">Añadido</string>
     <string name="timecard_card">4 días</string>
     <string name="likenumbercard_card">10 Me Gusta</string>
     <string name="dislikenumbercard_card">4 No Me Gusta</string>
@@ -44,4 +44,5 @@
     <string name="text_button_createpost">Crear Post</string>
     <string name="menu_signout">Cerrar sesión</string>
     <string name="menu_acercade">Acerca de</string>
+    <string name="secondword_detail_dislike">No me gusta</string>
 </resources>

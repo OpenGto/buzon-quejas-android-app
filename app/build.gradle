@@ -44,10 +44,11 @@ dependencies {
     implementation 'com.zoonref:simple-view-behavior:1.0'
     androidTestImplementation 'com.android.support.test:runner:1.0.1'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
+    testImplementation 'junit:junit:4.12'
     compile 'com.google.firebase:firebase-auth:11.2.0'
     compile 'com.google.firebase:firebase-storage:11.2.0'
+    compile 'com.google.firebase:firebase-database:11.2.0'
     compile 'com.facebook.android:facebook-android-sdk:[4,5)'
-    testImplementation 'junit:junit:4.12'
 }
 
 // firebase

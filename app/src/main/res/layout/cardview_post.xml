@@ -19,7 +19,6 @@
             android:id="@+id/postCardImage"
             android:layout_width="match_parent"
             android:layout_height="@dimen/height_cardview"
-            android:background="@drawable/image"
             android:scaleType="centerCrop"
             android:transitionName="@string/transitionname_picture"
             />
@@ -34,41 +33,24 @@
             android:background="@color/backgroundtext_card"
             >
 
-            <TextView
-                android:id="@+id/userNameCard"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/username_card"
-                android:textColor="@android:color/white"
-                android:textSize="@dimen/textsize_username_card"
-                />
 
             <TextView
                 android:id="@+id/titleCard"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                android:text="@string/title_card"
                 android:textColor="@android:color/white"
                 android:textSize="@dimen/textsize_title_card" />
 
             <TextView
-                android:id="@+id/typeCard"
+                android:id="@+id/userNameCard"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                android:text="tipo"
                 android:textColor="@android:color/white"
-                android:textSize="@dimen/textsize_title_card" />
+                android:layout_marginTop="2dp"
+                android:textSize="@dimen/textsize_username_card"
+                />
 
-            <TextView
-                android:id="@+id/statusCard"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                android:text="status"
-                android:textColor="@android:color/white"
-                android:textSize="@dimen/textsize_title_card" />
+
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -85,7 +67,6 @@
                     android:id="@+id/timeCard"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/timecard_card"
                     android:textColor="@android:color/white"
                     android:textSize="@dimen/firstword_textsize_card"
                     android:layout_marginLeft="@dimen/timecard_marginleft_card"
@@ -108,7 +89,6 @@
                     android:id="@+id/likeNumberCard"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/likenumbercard_card"
                     android:textColor="@android:color/white"
                     android:textSize="@dimen/firstword_textsize_card"
                     android:layout_marginLeft="@dimen/timecard_marginleft_card"
@@ -126,7 +106,6 @@
                     android:id="@+id/dislikeNumberCard"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/dislikenumbercard_card"
                     android:textColor="@android:color/white"
                     android:textSize="@dimen/firstword_textsize_card"
                     android:layout_marginLeft="@dimen/timecard_marginleft_card"

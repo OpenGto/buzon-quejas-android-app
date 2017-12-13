@@ -26,19 +26,18 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center|top"
-                android:layout_marginLeft="16dp"
-                android:layout_marginRight="16dp"
+                android:layout_height="260dp"
+                android:layout_gravity="center"
                 android:gravity="center"
                 android:orientation="vertical"
                 android:paddingBottom="20dp"
+                android:background="@drawable/profile"
                 android:paddingTop="200dp">
 
                 <TextView
+                    android:id="@+id/userDisplayName"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Byron Martinez"
                     android:textColor="@android:color/white"
                     android:textSize="30dp" />
 
@@ -78,7 +77,7 @@
     -->
 
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/postProfileRecycler"
+        android:id="@+id/postsList"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:paddingLeft="@dimen/activity_horizontal_margin"
@@ -88,12 +87,12 @@
 
 
     <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/userProfilePhoto"
         android:layout_width="@dimen/dimen_circleimageprofile"
         android:layout_height="@dimen/dimen_circleimageprofile"
         android:layout_gravity="center|top"
         android:layout_marginTop="@dimen/margintop_circleimageprofile"
         android:elevation="@dimen/elevation_circleimageprofile"
-        android:src="@drawable/image"
         app:dependTargetY="@dimen/limitY_circleimage"
         app:dependType="y"
         app:dependsOn="@+id/appBarProfile"
@@ -107,6 +106,7 @@
 
 
     <TextView
+        android:id="@+id/userDisplayNameBar"
         android:layout_width="wrap_content"
         android:layout_height="?attr/actionBarSize"
         android:layout_marginLeft="72dp"
@@ -114,7 +114,6 @@
         android:alpha="0"
         android:elevation="10dp"
         android:gravity="center_vertical"
-        android:text="Byron Martínez"
         android:textColor="@android:color/white"
         android:textSize="18dp"
         app:dependTargetY="-250dp"

@@ -1,5 +1,7 @@
 package com.opengto.buzondequejas.post;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.support.annotation.NonNull;
@@ -16,13 +18,20 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.opengto.buzondequejas.BuzonApplication;
+import com.opengto.buzondequejas.model.Post;
+import com.opengto.buzondequejas.model.User;
 import com.squareup.picasso.Picasso;
 import com.opengto.buzondequejas.R;
 
 import java.io.ByteArrayOutputStream;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+import java.util.TimeZone;
 
 public class NewPostActivity extends AppCompatActivity {
 
@@ -32,14 +41,21 @@ public class NewPostActivity extends AppCompatActivity {
     private ProgressBar progressBar;
     private Button btnCreatePost;
     private String photoPath;
+
     private BuzonApplication app;
     private StorageReference storageReference;
+    private DatabaseReference databaseReference;
+    private final String POST_REF ="Posts";
+
+    private final String URL_DEFAULT = "https://sumarketing.com.mx/media/files/no-profile.jpeg";
     private String TAG = "NewPostActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_post);
+
+        setupFirebase();
 
         setupActivity();
     }
@@ -49,10 +65,6 @@ public class NewPostActivity extends AppCompatActivity {
 
     // metodos
     public void setupActivity(){
-
-        app = (BuzonApplication) getApplicationContext();
-
-        storageReference = app.getStorageReference();
 
         imgPhoto = (ImageView) findViewById(R.id.imgPhoto);
 
@@ -70,6 +82,16 @@ public class NewPostActivity extends AppCompatActivity {
             photoPath = getIntent().getExtras().getString("PHOTO_PATH_TEMP");
             showPhoto();
         }
+    }
+
+
+    public void setupFirebase(){
+        //firebase
+        app = (BuzonApplication) getApplicationContext();
+
+        storageReference = app.getStorageReference();
+        databaseReference = app.getDatabaseReference();
+
     }
 
 
@@ -110,6 +132,7 @@ public class NewPostActivity extends AppCompatActivity {
 
     public void performUploadPhoto(String photoName, byte [] photoByte) {
 
+
         StorageReference photoReference = storageReference.child("post_images/" + photoName);
 
         UploadTask uploadTask = photoReference.putBytes(photoByte);
@@ -129,10 +152,132 @@ public class NewPostActivity extends AppCompatActivity {
                 Uri uriPhoto = taskSnapshot.getDownloadUrl();
                 String photoURL = uriPhoto.toString();
                 Log.w(TAG, "URL Photo > " + photoURL);
-                finish();
+
+
+                //guardar el post en la base de datos
+                CreateNewPost(photoURL);
+
             }
         });
     }
+
+
+    public void CreateNewPost(String url){
+
+        // obtener los datos y validarlos
+        Post post = getData();
+
+        //
+        if (post != null){
+
+            //agregar la url
+            post.setPictureUrl(url);
+            performCreateNewPost(post);
+        }
+        else{
+            // si no se pudo validar
+            enableInputs();
+            hideProgressBar();
+        }
+
+    }
+
+
+    public void performCreateNewPost(Post post){
+
+        //agregar el id
+        post.setId(databaseReference.push().getKey());
+
+        //subir a database
+        try{
+            databaseReference.child(POST_REF).child(post.getId()).setValue(post);
+            finish();
+        } catch (Exception e){
+            showToast("Error: " + e.getMessage().toString());
+        }
+    }
+
+
+    public Post getData() {
+
+        try{
+
+            String tags = "Queja";
+
+            String userId = BuzonApplication.getPref("userId", getApplicationContext());
+            String displayName = BuzonApplication.getPref("displayName", getApplicationContext()); // obtener de las shared preferences
+            String profilePhotoUrl = BuzonApplication.getPref("profilePhotoUrl", getApplicationContext());
+
+
+            Log.w(TAG, "userId > " + userId);
+            Log.w(TAG, "displayName > " + displayName);
+            Log.w(TAG, "profilePhotoUrl > " + profilePhotoUrl);
+
+            User user = new User(userId, displayName, profilePhotoUrl);
+
+
+            // obtener datos y meterlos en un objeto
+            Post post = new Post(
+                    null,
+                    null,
+                    edtTitle.getText().toString(),
+                    edtDescription.getText().toString(),
+                    getTimestamp(),
+                    "Queja",
+                    "Nuevo",
+                    user,
+                    tags,
+                    0,
+                    0
+            );
+
+
+            if (validateData(post)){
+                return post;
+            }
+            else{
+                return null;
+            }
+
+
+        }catch (Exception ex){
+            String error = "Ocurrió un error: " + ex.getMessage().toString();
+            showToast(error);
+            return null;
+        }
+
+    }
+
+
+    public boolean validateData(Post post) {
+
+
+        if (post.getTitle().trim().equals("")){
+            showToast("El Titulo es obligatorio");
+            return false;
+        }
+
+        if (post.getDescription().trim().equals("")){
+            showToast("La descripción es obligatoria");
+            return false;
+        }
+
+        if (post.getUser().getId().trim().equals("")){
+            showToast("No se pudo obtener un usuario");
+            return false;
+        }
+
+
+        return true;
+    }
+
+
+    private String getTimestamp(){
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", new Locale("es", "MX"));
+        sdf.setTimeZone(TimeZone.getTimeZone("America/Mexico_City"));
+        return sdf.format(new Date());
+    }
+
 
 
     // metodos view

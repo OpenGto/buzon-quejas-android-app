@@ -19,6 +19,7 @@ import com.facebook.login.Login;
 import com.facebook.login.LoginManager;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.opengto.buzondequejas.BuzonApplication;
 import com.opengto.buzondequejas.R;
 import com.opengto.buzondequejas.user.SigninActivity;
 
@@ -36,6 +37,8 @@ public class ContainerActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_container);
+
+        setupFirebase();
 
         // declarar los fragments
         final Fragment searchFragment = new SearchFragment();
@@ -76,9 +79,6 @@ public class ContainerActivity extends AppCompatActivity {
         });
 
 
-        setupFirebase();
-
-
     }
 
 
@@ -102,8 +102,12 @@ public class ContainerActivity extends AppCompatActivity {
                 }
                 showToast("Se cerró la sesión");
 
+                resetSharedPreferences();
+
                 Intent i = new Intent(ContainerActivity.this, SigninActivity.class);
                 startActivity(i);
+
+
                 break;
 
             case R.id.mAbout:
@@ -119,8 +123,8 @@ public class ContainerActivity extends AppCompatActivity {
 
     //metodos
     public void setupFirebase(){
-        firebaseAuth = FirebaseAuth.getInstance();
 
+        firebaseAuth = FirebaseAuth.getInstance();
 
         authStateListener = new FirebaseAuth.AuthStateListener(){
             @Override
@@ -131,12 +135,25 @@ public class ContainerActivity extends AppCompatActivity {
                     Log.w(TAG, "Usuario logueado" + firebaseUser.getEmail());
                 }else {
                     Log.w(TAG, "Usuario No logeado ");
+
+                    Intent intent = new Intent(ContainerActivity.this, SigninActivity.class);
+                    startActivity(intent);
                 }
 
             }
         };
     }
 
+    public void resetSharedPreferences(){
+
+        //shared preferences
+        BuzonApplication.putPref("email", "", getApplicationContext());
+        BuzonApplication.putPref("displayName", "", getApplicationContext());
+        BuzonApplication.putPref("profilePhotoUrl", "", getApplicationContext());
+        BuzonApplication.putPref("userId", "", getApplicationContext());
+
+
+    }
 
 
     // metodos view
